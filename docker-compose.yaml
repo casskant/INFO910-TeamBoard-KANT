@@ -1,0 +1,30 @@
+# Mots de passe en clair volontairement : projet pédagogique,
+# cela évite un fichier .env à créer pour la correction.
+services:
+  mongo:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: changeme
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./app
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_HOST: mongo
+      MONGO_USER: admin
+      MONGO_PASSWORD: changeme
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo-data:

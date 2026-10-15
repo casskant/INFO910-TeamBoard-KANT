@@ -3,16 +3,15 @@ kind: Deployment
 metadata: { name: backend, namespace: teamboard }
 spec:
   replicas: 2
-  selector: { matchLabels: { app: backend }= }
+  selector: { matchLabels: { app: backend } }
   template:
     metadata: { labels: { app: backend } }
     spec:
       containers:
         - name: backend
-          image: cassa/teamboard:1.0
+          image: teamboard-backend:latest
           ports: [{ containerPort: 3000 }]
           env:
-            - name: MONGO_USER
             - name: MONGO_USER
               valueFrom: { secretKeyRef: { name: mongo-secret, key: MONGO_INITDB_ROOT_USERNAME } }
             - name: MONGO_PASSWORD
